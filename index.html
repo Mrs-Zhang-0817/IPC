@@ -7,22 +7,17 @@
   <style>
     :root {
       --ink: #0b0c10;
-      --ink-deep: #050608;
       --gold: #c5a880;
       --gold-bright: #ecd8b7;
       --red: #9b2f23;
-      --paper-shadow: rgba(0, 0, 0, 0.68);
-      --line: rgba(197, 168, 128, 0.42);
       --sidebar-width: 60px;
       --drawer-width: 35%;
-      --stage-transform: scale(1);
-      --stage-background: url("assets/bg_master.png"), url("assets/图片·关卡1/主背景1重绘·最初.png");
-      --notebook-background: url("assets/bg_notebook.png"), url("assets/图片·序章/道具/推理板.png");
+      --master-bg: url("assets/bg_master.png"), url("assets/图片·关卡1/主背景1重绘·最初.png");
+      --notebook-bg: url("assets/bg_notebook.png"), url("assets/图片·序章/道具/推理板.png");
+      --tree-closeup-absolute: url("file:///D:/OneDrive%20-%20The%20University%20of%20Nottingham%20Ningbo%20China/%E6%A1%8C%E9%9D%A2/IPC/assets/%E5%9B%BE%E7%89%87%C2%B7%E5%85%B3%E5%8D%A11/%E5%88%86%E8%A7%86%E8%A7%921%E9%87%8D%E7%BB%98%C2%B7%E6%A0%91.png");
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       min-height: 100vh;
@@ -37,46 +32,26 @@
       font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     }
 
-    button {
-      font: inherit;
-    }
+    button { font: inherit; }
 
     #game-container {
       position: relative;
       width: min(96vw, calc(96vh * 16 / 9));
       aspect-ratio: 16 / 9;
       overflow: hidden;
-      background: var(--ink);
+      background: #050608;
       border: 1px solid rgba(197, 168, 128, 0.55);
-      box-shadow:
-        0 0 0 1px #000,
-        0 28px 90px rgba(0, 0, 0, 0.82),
-        inset 0 0 120px rgba(0, 0, 0, 0.58);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.82), inset 0 0 120px rgba(0, 0, 0, 0.58);
       isolation: isolate;
-    }
-
-    #game-container.shake {
-      animation: screenShake 520ms ease-in-out 2;
     }
 
     #scene-layer {
       position: absolute;
       inset: 0;
       z-index: 1;
-      overflow: hidden;
-      transform-origin: 54% 42%;
-      transform: var(--stage-transform);
-      transition: transform 300ms ease, filter 300ms ease;
-    }
-
-    #scene-layer::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: var(--stage-background);
+      background-image: var(--master-bg);
       background-size: cover;
       background-position: center;
-      transition: opacity 260ms ease;
     }
 
     #scene-layer::after {
@@ -85,7 +60,7 @@
       inset: 0;
       pointer-events: none;
       background:
-        linear-gradient(90deg, rgba(5, 6, 8, 0.72) 0%, transparent 20%, transparent 76%, rgba(5, 6, 8, 0.42) 100%),
+        linear-gradient(90deg, rgba(5, 6, 8, 0.7), transparent 20%, transparent 76%, rgba(5, 6, 8, 0.42)),
         radial-gradient(circle at 56% 47%, transparent 0%, rgba(0, 0, 0, 0.44) 78%);
     }
 
@@ -93,7 +68,6 @@
       position: absolute;
       inset: 0 0 0 var(--sidebar-width);
       z-index: 2;
-      overflow: hidden;
     }
 
     .level-title {
@@ -103,7 +77,6 @@
       margin: 0;
       color: var(--gold-bright);
       font-size: clamp(20px, 2.2vw, 34px);
-      letter-spacing: 0;
       text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
       pointer-events: none;
     }
@@ -131,19 +104,18 @@
     .hotspot {
       position: absolute;
       padding: 0;
-      border: 1px solid transparent;
-      border-radius: 50%;
+      color: var(--gold-bright);
       background: transparent;
+      border: 1px solid transparent;
       cursor: pointer;
       pointer-events: auto;
-      transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease, transform 180ms ease;
+      transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
     }
 
     .hotspot:hover {
-      border-color: rgba(197, 168, 128, 0.5);
-      background: radial-gradient(circle, rgba(197, 168, 128, 0.14), rgba(197, 168, 128, 0.02) 68%, transparent 74%);
-      box-shadow: 0 0 26px rgba(197, 168, 128, 0.22);
-      transform: scale(1.03);
+      border-color: rgba(197, 168, 128, 0.58);
+      background: rgba(197, 168, 128, 0.05);
+      box-shadow: 0 0 22px rgba(197, 168, 128, 0.18);
     }
 
     .hotspot span {
@@ -158,9 +130,9 @@
       border-radius: 3px;
       font-size: 12px;
       opacity: 0;
-      pointer-events: none;
       transform: translateX(-50%);
       transition: opacity 160ms ease, translate 160ms ease;
+      pointer-events: none;
     }
 
     .hotspot:hover span {
@@ -169,18 +141,6 @@
     }
 
     #tree-hotspot {
-      left: 43%;
-      top: 18%;
-      width: 20%;
-      height: 36%;
-    }
-
-    #pot-right-hotspot {
-      left: 83%;
-      top: 66%;
-      width: 9%;
-      height: 12%;
-      border-radius: 14px;
     }
 
     #pot-left-hotspot {
@@ -191,55 +151,77 @@
       border-radius: 14px;
     }
 
-    body.closeup #tree-hotspot {
-      left: 35%;
-      top: 8%;
-      width: 42%;
-      height: 82%;
+    #pot-right-hotspot {
+      left: 83%;
+      top: 66%;
+      width: 9%;
+      height: 12%;
+      border-radius: 14px;
     }
 
-    body.closeup #pot-left-hotspot,
-    body.closeup #pot-right-hotspot {
-      display: none;
-    }
-
-    #back-overview {
+    #closeup-view-container {
       position: absolute;
-      right: 24px;
-      top: 22px;
-      z-index: 5;
-      padding: 9px 15px;
-      color: var(--gold-bright);
-      background: rgba(8, 8, 8, 0.62);
-      border: 1px solid rgba(197, 168, 128, 0.48);
+      inset: 0;
+      z-index: 6;
+      overflow: hidden;
+      background-color: var(--ink);
+      background-image: var(--tree-closeup-absolute);
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+    }
+
+    #closeup-view-container.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    #closeup-view-container.shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    #closeup-view-container::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.32) 76%);
+    }
+
+    #closeup-interaction-zone {
+      position: absolute;
+      left: 38%;
+      top: 14%;
+      z-index: 2;
+      width: 30%;
+      height: 70%;
+      padding: 0;
+      background: transparent;
+      border: 1px dashed rgba(197, 168, 128, 0.18);
       border-radius: 4px;
       cursor: pointer;
-      pointer-events: auto;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
-      transition: background 160ms ease, border-color 160ms ease;
-    }
-
-    #back-overview:hover {
-      background: rgba(197, 168, 128, 0.16);
-      border-color: rgba(236, 216, 183, 0.76);
     }
 
     #tree-effects {
       position: absolute;
-      inset: 0 0 0 var(--sidebar-width);
-      z-index: 4;
+      inset: 0;
+      z-index: 3;
       pointer-events: none;
     }
 
     .axe-wound {
       position: absolute;
-      left: 52%;
-      top: 43%;
-      width: 120px;
-      height: 12px;
-      background: linear-gradient(90deg, transparent, #17110e 12%, #6d241c 50%, #17110e 88%, transparent);
+      left: 48%;
+      top: 45%;
+      width: 150px;
+      height: 14px;
+      background: linear-gradient(90deg, transparent, #2b2114 12%, #d5b15f 50%, #2b2114 88%, transparent);
       border-radius: 999px;
-      box-shadow: 0 0 18px rgba(139, 37, 27, 0.5);
+      box-shadow: 0 0 22px rgba(213, 177, 95, 0.58);
       transform: rotate(-12deg);
     }
 
@@ -255,11 +237,61 @@
       height: 52%;
       border-radius: 48%;
       border: 3px solid rgba(155, 47, 35, 0.85);
-      box-shadow:
-        0 0 18px rgba(155, 47, 35, 0.45),
-        inset 0 0 24px rgba(197, 168, 128, 0.16);
+      box-shadow: 0 0 18px rgba(155, 47, 35, 0.45), inset 0 0 24px rgba(197, 168, 128, 0.16);
       transform: rotate(-10deg);
       animation: silkPulse 1300ms ease-in-out infinite alternate;
+    }
+
+    .abyss-crack {
+      position: absolute;
+      left: 51%;
+      top: 17%;
+      width: 34px;
+      height: 68%;
+      background: linear-gradient(180deg, transparent 0%, #010101 8%, #000 88%, transparent 100%);
+      clip-path: polygon(42% 0, 66% 8%, 48% 19%, 72% 33%, 44% 49%, 61% 63%, 38% 80%, 55% 100%, 22% 86%, 34% 70%, 15% 53%, 36% 36%, 19% 18%);
+      box-shadow: 0 0 34px rgba(0, 0, 0, 0.95), 0 0 18px rgba(197, 168, 128, 0.24);
+      opacity: 0;
+      transform: translateX(-50%) scaleY(0.15);
+      animation: crackOpen 680ms ease-out forwards;
+    }
+
+    #closeup-caption {
+      position: absolute;
+      left: 50%;
+      bottom: 9%;
+      z-index: 5;
+      width: min(680px, 72%);
+      min-height: 54px;
+      padding: 13px 20px;
+      color: #f4dfbd;
+      background: rgba(5, 6, 8, 0.72);
+      border: 1px solid rgba(197, 168, 128, 0.42);
+      border-radius: 5px;
+      line-height: 1.8;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(10px);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    #closeup-caption.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #closeup-exit {
+      position: absolute;
+      right: 24px;
+      bottom: 22px;
+      z-index: 5;
+      padding: 9px 15px;
+      color: var(--gold-bright);
+      background: rgba(8, 8, 8, 0.62);
+      border: 1px solid rgba(197, 168, 128, 0.48);
+      border-radius: 4px;
+      cursor: pointer;
     }
 
     #sidebar {
@@ -275,7 +307,7 @@
       justify-content: center;
       gap: 16px;
       background: linear-gradient(180deg, rgba(5, 6, 8, 0.98), rgba(17, 15, 13, 0.96));
-      border-right: 1px solid var(--line);
+      border-right: 1px solid rgba(197, 168, 128, 0.42);
       box-shadow: 10px 0 28px rgba(0, 0, 0, 0.46);
     }
 
@@ -293,7 +325,6 @@
       font-size: 22px;
       font-weight: 700;
       writing-mode: vertical-rl;
-      transition: background 180ms ease, color 180ms ease, transform 180ms ease, border-color 180ms ease;
     }
 
     .sidebar-btn:hover,
@@ -301,7 +332,6 @@
       color: var(--gold-bright);
       background: rgba(197, 168, 128, 0.18);
       border-color: rgba(244, 223, 189, 0.76);
-      transform: translateX(2px);
     }
 
     #drawer-panel {
@@ -314,9 +344,7 @@
       padding: 24px 22px;
       color: #e7d2b2;
       background-color: rgba(20, 15, 12, 0.94);
-      background-image:
-        linear-gradient(rgba(11, 12, 16, 0.24), rgba(11, 12, 16, 0.62)),
-        var(--notebook-background);
+      background-image: linear-gradient(rgba(11, 12, 16, 0.24), rgba(11, 12, 16, 0.62)), var(--notebook-bg);
       background-size: cover;
       background-position: center;
       border-right: 1px solid rgba(197, 168, 128, 0.48);
@@ -325,9 +353,7 @@
       transition: transform 320ms ease;
     }
 
-    #drawer-panel.open {
-      transform: translateX(0);
-    }
+    #drawer-panel.open { transform: translateX(0); }
 
     .drawer-header {
       display: flex;
@@ -342,7 +368,6 @@
       margin: 0;
       color: #f1ddbd;
       font-size: clamp(18px, 1.8vw, 25px);
-      letter-spacing: 0;
     }
 
     #close-drawer {
@@ -359,7 +384,6 @@
       height: calc(100% - 54px);
       padding-top: 16px;
       overflow: auto;
-      scrollbar-color: rgba(197, 168, 128, 0.55) rgba(0, 0, 0, 0.25);
     }
 
     .skill-grid,
@@ -383,24 +407,12 @@
       border: 1px solid rgba(197, 168, 128, 0.32);
       border-radius: 6px;
       cursor: pointer;
-      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
-    }
-
-    .skill-card:hover,
-    .item-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(234, 216, 189, 0.68);
-      background: rgba(21, 18, 15, 0.72);
     }
 
     .skill-card.active,
     .item-card.equipped {
       border-color: rgba(244, 223, 189, 0.88);
       box-shadow: 0 0 18px rgba(197, 168, 128, 0.22);
-    }
-
-    .skill-card.locked {
-      color: rgba(234, 216, 189, 0.5);
     }
 
     .skill-card.locked img {
@@ -446,7 +458,6 @@
       background: linear-gradient(180deg, rgba(35, 28, 20, 0.97), rgba(11, 12, 16, 0.97));
       border: 1px solid rgba(197, 168, 128, 0.62);
       border-radius: 6px;
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.58), inset 0 0 24px rgba(197, 168, 128, 0.08);
       text-align: center;
       line-height: 1.7;
       opacity: 0;
@@ -488,17 +499,7 @@
       color: #e7d2b2;
       background: var(--ink);
       border: 2px outset var(--gold);
-      box-shadow:
-        0 0 0 6px rgba(197, 168, 128, 0.08),
-        0 0 0 9px rgba(11, 12, 16, 0.95),
-        0 0 0 11px rgba(197, 168, 128, 0.34),
-        0 28px 80px rgba(0, 0, 0, 0.8);
-      transform: translateY(16px) scale(0.98);
-      transition: transform 240ms ease;
-    }
-
-    .modal-overlay.show .modal-content {
-      transform: translateY(0) scale(1);
+      box-shadow: 0 0 0 6px rgba(197, 168, 128, 0.08), 0 0 0 9px rgba(11, 12, 16, 0.95), 0 0 0 11px rgba(197, 168, 128, 0.34), 0 28px 80px rgba(0, 0, 0, 0.8);
     }
 
     .artifact-frame {
@@ -508,10 +509,7 @@
       place-items: center;
       border: 2px solid var(--gold);
       border-radius: 50%;
-      background:
-        radial-gradient(circle, rgba(197, 168, 128, 0.16), transparent 62%),
-        #08090c;
-      box-shadow: inset 0 0 36px rgba(197, 168, 128, 0.1), 0 0 26px rgba(197, 168, 128, 0.14);
+      background: radial-gradient(circle, rgba(197, 168, 128, 0.16), transparent 62%), #08090c;
     }
 
     .artifact-frame img {
@@ -520,16 +518,10 @@
       object-fit: contain;
     }
 
-    .modal-text {
-      flex: 1;
-      min-width: 0;
-    }
-
     .modal-text h2 {
       margin: 0 0 14px;
       color: var(--gold-bright);
       font-size: clamp(22px, 2vw, 30px);
-      letter-spacing: 0;
     }
 
     .property-text {
@@ -581,11 +573,15 @@
       font-size: clamp(22px, 3vw, 42px);
       line-height: 1.8;
       text-align: center;
-      text-shadow: 0 0 18px rgba(197, 168, 128, 0.45);
+    }
+
+    @keyframes breath {
+      0%, 100% { border-color: rgba(197, 168, 128, 0.22); box-shadow: inset 0 0 12px rgba(197, 168, 128, 0.04), 0 0 8px rgba(197, 168, 128, 0.06); }
+      50% { border-color: rgba(197, 168, 128, 0.5); box-shadow: inset 0 0 22px rgba(197, 168, 128, 0.09), 0 0 18px rgba(197, 168, 128, 0.18); }
     }
 
     @keyframes woundHeal {
-      0% { width: 120px; opacity: 1; }
+      0% { width: 150px; opacity: 1; }
       70% { width: 18px; opacity: 0.85; }
       100% { width: 0; opacity: 0; }
     }
@@ -595,13 +591,19 @@
       to { opacity: 1; filter: drop-shadow(0 0 16px rgba(197, 168, 128, 0.28)); }
     }
 
-    @keyframes screenShake {
-      0%, 100% { transform: translate(0, 0); }
-      15% { transform: translate(-9px, 6px); }
-      30% { transform: translate(8px, -5px); }
-      45% { transform: translate(-6px, -7px); }
-      60% { transform: translate(7px, 5px); }
-      75% { transform: translate(-4px, 4px); }
+    @keyframes crackOpen {
+      0% { opacity: 0; transform: translateX(-50%) scaleY(0.15) scaleX(0.35); }
+      65% { opacity: 1; transform: translateX(-50%) scaleY(1.04) scaleX(1.15); }
+      100% { opacity: 1; transform: translateX(-50%) scaleY(1) scaleX(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: scale(1) translate(0, 0); }
+      15% { transform: scale(1.01) translate(-10px, 6px); }
+      30% { transform: scale(1.01) translate(9px, -6px); }
+      45% { transform: scale(1.01) translate(-7px, -8px); }
+      60% { transform: scale(1.01) translate(8px, 5px); }
+      75% { transform: scale(1.01) translate(-5px, 4px); }
     }
 
     @media (max-width: 760px) {
@@ -610,43 +612,33 @@
         --drawer-width: calc(100% - var(--sidebar-width));
       }
 
-      #game-container {
-        width: 100vw;
-      }
-
-      #drawer-panel {
-        padding: 20px 16px;
-      }
-
-      .sidebar-btn {
-        width: 38px;
-        height: 68px;
-        font-size: 19px;
-      }
-
-      .skill-grid,
-      .item-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .modal-content {
-        width: 96%;
-        flex-direction: column;
-        gap: 16px;
-        padding: 22px;
-      }
-
-      .artifact-frame {
-        flex-basis: 160px;
-      }
+      #game-container { width: 100vw; }
+      .skill-grid, .item-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .modal-content { width: 96%; flex-direction: column; gap: 16px; padding: 22px; }
+      .artifact-frame { flex-basis: 160px; }
     }
   </style>
 </head>
 <body>
   <main id="game-container" aria-label="玄黑悬疑解谜游戏">
     <div id="scene-layer"></div>
-    <section id="level-stage" aria-label="当前关卡场景"></section>
-    <div id="tree-effects" aria-hidden="true"></div>
+
+    <section id="level-stage" aria-label="当前关卡场景">
+      <h1 class="level-title">第一关：太古神木</h1>
+      <p class="level-subtitle">地下神木祠全景。神木主根盘踞中央，两侧旧物与残破祭坛掩着关键器物。</p>
+      <div id="hotspots">
+        <button id="tree-hotspot" class="hotspot" type="button" aria-label="神木主根"><span>神木主根</span></button>
+        <button id="pot-left-hotspot" class="hotspot" type="button" aria-label="残破祭坛"><span>残破祭坛</span></button>
+        <button id="pot-right-hotspot" class="hotspot" type="button" aria-label="旧物堆"><span>旧物堆</span></button>
+      </div>
+    </section>
+
+    <section id="closeup-view-container" aria-hidden="true">
+      <button id="closeup-interaction-zone" type="button" aria-label="树干特写互动区"></button>
+      <div id="tree-effects" aria-hidden="true"></div>
+      <div id="closeup-caption" aria-live="polite"></div>
+      <button id="closeup-exit" type="button">返回全景</button>
+    </section>
 
     <aside id="sidebar" aria-label="全局侧边栏">
       <button class="sidebar-btn" type="button" data-panel="skills" aria-label="打开秘术面板">能</button>
@@ -664,9 +656,7 @@
 
     <section id="ancient-modal" class="modal-overlay" aria-hidden="true">
       <article class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div class="artifact-frame">
-          <img id="modal-image" src="" alt="">
-        </div>
+        <div class="artifact-frame"><img id="modal-image" src="" alt=""></div>
         <div class="modal-text">
           <h2 id="modal-title"></h2>
           <p id="modal-property" class="property-text"></p>
@@ -684,19 +674,12 @@
     let currentLevel = 'level1';
     let unlockedSkills = ['insight', 'rubbing'];
     let globalInventory = [
-      {
-        id: 'firestarter',
-        name: '火折子',
-        icon: 'assets/盗墓工具/火折子.png',
-        description: '上一关带入的照明器具。'
-      }
+      { id: 'firestarter', name: '火折子', icon: 'assets/盗墓工具/火折子.png', description: '上一关带入的照明器具。' }
     ];
-
     let globalClues = [
       '地下神木祠内壁残留暗金纹路。',
       '主根附近有朱丝与金器才能破开的五行痕迹。'
     ];
-
     let activeSkill = null;
     let activePanel = null;
     let equippedItem = null;
@@ -704,27 +687,6 @@
     let isTreeBurnt = false;
     let isLevelComplete = false;
     let toastTimer = null;
-
-    const assetPaths = {
-      masterBg: 'assets/bg_master.png',
-      masterBgFallback: 'assets/图片·关卡1/主背景1重绘·最初.png',
-      treeCloseup: 'assets/图片·关卡1/分视角1重绘·树.png',
-      treeCloseupFallback: 'assets/图片·关卡1/分视角1重绘·树.png',
-      notebook: 'assets/bg_notebook.png',
-      notebookFallback: 'assets/图片·序章/道具/推理板.png',
-      bronzeAxe: 'assets/图片·关卡1/青铜斧.png',
-      silk: 'assets/图片·关卡1/朱线.png',
-      silkFallback: 'assets/图片·关卡1/朱线.png'
-    };
-
-    const levels = {
-      level1: {
-        name: '第一关：太古神木',
-        subtitle: '地下神木祠全景。神木主根盘踞中央',
-        background: assetPaths.masterBg,
-        backgroundFallback: assetPaths.masterBgFallback
-      }
-    };
 
     const skills = [
       { id: 'insight', name: '观纹', icon: 'assets/技能标识/观纹.png' },
@@ -738,41 +700,19 @@
     ];
 
     const itemCatalog = {
-      bronzeAxe: {
-        id: 'bronzeAxe',
-        name: '青铜斧',
-        icon: assetPaths.bronzeAxe,
-        description: '金斧属金，金乃断木。'
-      },
-      silk: {
-        id: 'silk',
-        name: '朱丝',
-        icon: assetPaths.silk,
-        fallbackIcon: assetPaths.silkFallback,
-        description: '朱丝属火，火灼其灵。'
-      },
-      firestarter: {
-        id: 'firestarter',
-        name: '火折子',
-        icon: 'assets/盗墓工具/火折子.png',
-        description: '暗室行路与点火之器。'
-      }
+      bronzeAxe: { id: 'bronzeAxe', name: '青铜斧', icon: 'assets/图片·关卡1/青铜斧.png', description: '金斧属金，金乃断木。' },
+      silk: { id: 'silk', name: '朱丝', icon: 'assets/图片·关卡1/朱线.png', description: '朱丝属火，火灼其灵。' },
+      firestarter: { id: 'firestarter', name: '火折子', icon: 'assets/盗墓工具/火折子.png', description: '暗室行路与点火之器。' }
     };
 
-    const panelTitles = {
-      skills: '九门秘术',
-      clues: '线索札记',
-      inventory: '随身行囊'
-    };
+    const panelTitles = { skills: '九门秘术', clues: '线索札记', inventory: '随身行囊' };
 
     const gameContainer = document.querySelector('#game-container');
-    const stage = document.querySelector('#level-stage');
-    const treeEffects = document.querySelector('#tree-effects');
     const drawer = document.querySelector('#drawer-panel');
     const drawerTitle = document.querySelector('#drawer-title');
     const drawerContent = document.querySelector('#drawer-content');
-    const sidebarButtons = document.querySelectorAll('.sidebar-btn');
     const closeDrawerButton = document.querySelector('#close-drawer');
+    const sidebarButtons = document.querySelectorAll('.sidebar-btn');
     const toast = document.querySelector('#toast');
     const ancientModal = document.querySelector('#ancient-modal');
     const modalTitle = document.querySelector('#modal-title');
@@ -780,81 +720,20 @@
     const modalProperty = document.querySelector('#modal-property');
     const modalStory = document.querySelector('#modal-story');
     const modalClose = document.querySelector('#modal-close');
+    const closeupView = document.querySelector('#closeup-view-container');
+    const closeupInteractionZone = document.querySelector('#closeup-interaction-zone');
+    const closeupExit = document.querySelector('#closeup-exit');
+    const closeupCaption = document.querySelector('#closeup-caption');
+    const treeEffects = document.querySelector('#tree-effects');
     const blackout = document.querySelector('#blackout');
     const typewriter = document.querySelector('#typewriter');
-
-    function renderCurrentLevel() {
-      const level = levels[currentLevel];
-      setSceneBackground(level.background, level.backgroundFallback);
-      document.body.classList.toggle('closeup', isTreeCloseup);
-      stage.innerHTML = `
-        <h1 class="level-title">${level.name}</h1>
-        <p class="level-subtitle">${level.subtitle}</p>
-        <div id="hotspots">
-          <button id="tree-hotspot" class="hotspot" type="button" data-action="tree" aria-label="神木主根">
-            <span>神木主根</span>
-          </button>
-          <button id="pot-left-hotspot" class="hotspot" type="button" data-action="search-left-pot" aria-label="残破祭坛">
-            <span>残破祭坛</span>
-          </button>
-          <button id="pot-right-hotspot" class="hotspot" type="button" data-action="search-right-pot" aria-label="旧物堆">
-            <span>旧物堆</span>
-          </button>
-        </div>
-        ${isTreeCloseup ? '<button id="back-overview" type="button" data-action="reset-overview">返回全景</button>' : ''}
-      `;
-      renderTreeEffects();
-      bindHotspotButtons();
-    }
-
-    function bindHotspotButtons() {
-      const treeHotspot = document.querySelector('#tree-hotspot');
-      const leftPotHotspot = document.querySelector('#pot-left-hotspot');
-      const rightPotHotspot = document.querySelector('#pot-right-hotspot');
-      const backOverview = document.querySelector('#back-overview');
-
-      if (treeHotspot) treeHotspot.onclick = (event) => {
-        event.stopPropagation();
-        handleTreeClick();
-      };
-      if (leftPotHotspot) leftPotHotspot.onclick = (event) => {
-        event.stopPropagation();
-        searchLeftPot();
-      };
-      if (rightPotHotspot) rightPotHotspot.onclick = (event) => {
-        event.stopPropagation();
-        searchRightPot();
-      };
-      if (backOverview) backOverview.onclick = (event) => {
-        event.stopPropagation();
-        resetOverview();
-      };
-    }
-
-    function setSceneBackground(primary, fallback) {
-      gameContainer.style.setProperty('--stage-background', `url("${primary}"), url("${fallback}")`);
-    }
-
-    function setCloseupBackground() {
-      setSceneBackground(assetPaths.treeCloseup, assetPaths.treeCloseupFallback);
-      document.body.classList.add('closeup');
-    }
-
-    function resetOverview() {
-      isTreeCloseup = false;
-      document.body.classList.remove('closeup');
-      setSceneBackground(levels[currentLevel].background, levels[currentLevel].backgroundFallback);
-      renderCurrentLevel();
-    }
 
     function openPanel(panelName) {
       activePanel = panelName;
       drawerTitle.textContent = panelTitles[panelName];
       drawer.classList.add('open');
       drawer.setAttribute('aria-hidden', 'false');
-      sidebarButtons.forEach((button) => {
-        button.classList.toggle('active', button.dataset.panel === panelName);
-      });
+      sidebarButtons.forEach((button) => button.classList.toggle('active', button.dataset.panel === panelName));
       renderPanel(panelName);
     }
 
@@ -872,67 +751,23 @@
     }
 
     function renderSkillsPanel() {
-      drawerContent.innerHTML = `
-        <div class="skill-grid">
-          ${skills.map((skill) => {
-            const isUnlocked = unlockedSkills.includes(skill.id);
-            const isActive = activeSkill === skill.id;
-            return `
-              <button
-                class="skill-card ${isUnlocked ? '' : 'locked'} ${isActive ? 'active' : ''}"
-                type="button"
-                data-skill="${skill.id}"
-                aria-label="${skill.name}${isUnlocked ? '' : '，未觉醒'}"
-              >
-                <img src="${skill.icon}" alt="">
-                <span class="card-name">${skill.name}</span>
-              </button>
-            `;
-          }).join('')}
-        </div>
-      `;
+      drawerContent.innerHTML = `<div class="skill-grid">${skills.map((skill) => {
+        const isUnlocked = unlockedSkills.includes(skill.id);
+        const isActive = activeSkill === skill.id;
+        return `<button class="skill-card ${isUnlocked ? '' : 'locked'} ${isActive ? 'active' : ''}" type="button" data-skill="${skill.id}" aria-label="${skill.name}${isUnlocked ? '' : '，未觉醒'}"><img src="${skill.icon}" alt=""><span class="card-name">${skill.name}</span></button>`;
+      }).join('')}</div>`;
     }
 
     function renderCluesPanel() {
-      if (!globalClues.length) {
-        drawerContent.innerHTML = '<p class="empty-note">尚未获得线索。</p>';
-        return;
-      }
-
-      drawerContent.innerHTML = `
-        <ul class="clue-list">
-          ${globalClues.map((clue) => `<li>${clue}</li>`).join('')}
-        </ul>
-      `;
+      drawerContent.innerHTML = globalClues.length
+        ? `<ul class="clue-list">${globalClues.map((clue) => `<li>${clue}</li>`).join('')}</ul>`
+        : '<p class="empty-note">尚未获得线索。</p>';
     }
 
     function renderInventoryPanel() {
-      drawerContent.innerHTML = `
-        ${renderInventoryGrid()}
-      `;
-    }
-
-    function renderInventoryGrid() {
-      if (!globalInventory.length) {
-        return '<p class="empty-note">行囊暂空。</p>';
-      }
-
-      return `
-        <div class="item-grid">
-          ${globalInventory.slice(0, 8).map((item) => `
-            <button class="item-card ${equippedItem === item.id ? 'equipped' : ''}" type="button" data-item="${item.id}" aria-label="${item.name}">
-              ${renderItemFace(item)}
-            </button>
-          `).join('')}
-        </div>
-      `;
-    }
-
-    function renderItemFace(item) {
-      return `
-        <img src="${item.icon}" alt="" onerror="if (this.dataset.fallback) { this.src = this.dataset.fallback; this.dataset.fallback = ''; }" data-fallback="${item.fallbackIcon || ''}">
-        <span class="card-name">${item.name}</span>
-      `;
+      drawerContent.innerHTML = globalInventory.length
+        ? `<div class="item-grid">${globalInventory.slice(0, 8).map((item) => `<button class="item-card ${equippedItem === item.id ? 'equipped' : ''}" type="button" data-item="${item.id}" aria-label="${item.name}"><img src="${item.icon}" alt=""><span class="card-name">${item.name}</span></button>`).join('')}</div>`
+        : '<p class="empty-note">行囊暂空。</p>';
     }
 
     function activateSkill(skillId) {
@@ -940,86 +775,77 @@
         showToast('此秘术尚未觉醒，无法使用。');
         return;
       }
-
       activeSkill = activeSkill === skillId ? null : skillId;
       renderSkillsPanel();
     }
 
     function handleInventoryItemClick(itemId) {
-      const item = findInventoryItem(itemId);
+      const item = globalInventory.find((storedItem) => storedItem.id === itemId);
       if (!item) return;
-
       equippedItem = equippedItem === itemId ? null : itemId;
       showToast(equippedItem ? `已装备【${item.name}】。` : `已收起【${item.name}】。`);
       renderInventoryPanel();
     }
 
-    function searchRightPot() {
-      if (hasInventoryItem('bronzeAxe')) {
-        showToast('右侧祭台已被搜寻过。');
-        return;
+    function addInventoryItem(item) {
+      if (!globalInventory.some((storedItem) => storedItem.id === item.id)) {
+        globalInventory.push(item);
       }
-
-      addInventoryItem(itemCatalog.bronzeAxe);
-      showAncientModal(
-        '青铜斧',
-        itemCatalog.bronzeAxe.icon,
-        '金斧属金，金乃断木',
-        '你在旧物堆中翻找，发现了一柄沉重的青铜斧……获得道具【青铜斧】'
-      );
+      if (activePanel === 'inventory') renderInventoryPanel();
     }
 
     function searchLeftPot() {
-      if (hasInventoryItem('silk')) {
+      if (globalInventory.some((item) => item.id === 'silk')) {
         showToast('残破祭坛已被搜寻过。');
         return;
       }
-
       addInventoryItem(itemCatalog.silk);
-      showAncientModal(
-        '朱丝',
-        itemCatalog.silk.icon,
-        '朱丝属火，火灼其灵',
-        '你在尘封的残破祭坛下方，竟然扯出一缕紧绷的红线……获得道具【朱丝】。'
-      );
+      showAncientModal('朱丝', itemCatalog.silk.icon, '朱丝属火，火灼其灵', '你在尘封的残破祭坛下方，竟然扯出一缕紧绷的红线……获得道具【朱丝】。');
     }
 
-    function handleTreeClick() {
-      if (!isTreeCloseup) {
-        zoomToTree();
+    function searchRightPot() {
+      if (globalInventory.some((item) => item.id === 'bronzeAxe')) {
+        showToast('旧物堆已被搜寻过。');
         return;
       }
+      addInventoryItem(itemCatalog.bronzeAxe);
+      showAncientModal('青铜斧', itemCatalog.bronzeAxe.icon, '金斧属金，金乃断木', '你在旧物堆中翻找，发现了一柄沉重的青铜斧……获得道具【青铜斧】。');
+    }
 
+    function openTreeCloseup() {
+      closePanel();
+      isTreeCloseup = true;
+      closeupView.classList.add('active');
+      closeupView.setAttribute('aria-hidden', 'false');
+      clearCloseupCaption();
+    }
+
+    function closeTreeCloseup() {
+      if (isLevelComplete) return;
+      isTreeCloseup = false;
+      closeupView.classList.remove('active', 'shake');
+      closeupView.setAttribute('aria-hidden', 'true');
+      clearCloseupCaption();
+    }
+
+    function handleCloseupTreeClick() {
+      if (!isTreeCloseup) return;
       if (equippedItem === 'bronzeAxe' && isTreeBurnt) {
         completeLevelOne();
         return;
       }
-
       if (equippedItem === 'bronzeAxe') {
         createHealingWound();
-        showToast('神木生合不断！直接砍伐无效！');
+        typeCloseupText('神木生合不断！直接砍伐无效！');
         return;
       }
-
-      if (equippedItem === 'silk') {
+      if (equippedItem === 'silk' || equippedItem === 'fireSilk') {
         isTreeBurnt = true;
         renderTreeEffects();
-        showToast('朱丝缠上树身，神木灵性被火势压住。');
+        typeCloseupText(equippedItem === 'fireSilk' ? '附火朱丝缠上树身，神木灵性被火势压住。' : '朱丝缠上树身，神木灵性被火势压住。');
         return;
       }
-
-      showToast('树干纹路深处似有五行闭锁，需要合适器物。');
-    }
-
-    function zoomToTree() {
-      closePanel();
-      gameContainer.style.setProperty('--stage-transform', 'scale(3.5)');
-      window.setTimeout(() => {
-        isTreeCloseup = true;
-        gameContainer.style.setProperty('--stage-transform', 'scale(1)');
-        setCloseupBackground();
-        renderCurrentLevel();
-      }, 300);
+      typeCloseupText('树干纹路深处似有五行闭锁，需要合适器物。');
     }
 
     function createHealingWound() {
@@ -1038,13 +864,42 @@
       }
     }
 
+    function createAbyssCrack() {
+      if (treeEffects.querySelector('.abyss-crack')) return;
+      const crack = document.createElement('div');
+      crack.className = 'abyss-crack';
+      treeEffects.appendChild(crack);
+    }
+
     function completeLevelOne() {
       if (isLevelComplete) return;
       isLevelComplete = true;
-      gameContainer.classList.add('shake');
-      blackout.classList.add('show');
-      blackout.setAttribute('aria-hidden', 'false');
-      typeText('五行破开，神木轰然断裂！');
+      closeupView.classList.add('shake');
+      createAbyssCrack();
+      typeCloseupText('五行破开，神木轰然断裂！');
+      window.setTimeout(() => {
+        blackout.classList.add('show');
+        blackout.setAttribute('aria-hidden', 'false');
+        typeText('五行破开，神木轰然断裂！');
+      }, 900);
+    }
+
+    function typeCloseupText(text) {
+      window.clearTimeout(toastTimer);
+      closeupCaption.textContent = '';
+      closeupCaption.classList.add('show');
+      let index = 0;
+      const timer = window.setInterval(() => {
+        closeupCaption.textContent += text[index];
+        index += 1;
+        if (index >= text.length) window.clearInterval(timer);
+      }, 55);
+      toastTimer = window.setTimeout(() => closeupCaption.classList.remove('show'), Math.max(2200, text.length * 85));
+    }
+
+    function clearCloseupCaption() {
+      closeupCaption.classList.remove('show');
+      closeupCaption.textContent = '';
     }
 
     function typeText(text) {
@@ -1053,25 +908,12 @@
       const timer = window.setInterval(() => {
         typewriter.textContent += text[index];
         index += 1;
-        if (index >= text.length) {
-          window.clearInterval(timer);
-        }
+        if (index >= text.length) window.clearInterval(timer);
       }, 95);
     }
 
     function showAncientModal(title, imgSrc, propertyText, storyText) {
-      const modalFallbacks = {
-        [assetPaths.silk]: assetPaths.silkFallback
-      };
-
       modalTitle.textContent = title;
-      modalImage.dataset.fallback = modalFallbacks[imgSrc] || '';
-      modalImage.onerror = () => {
-        if (modalImage.dataset.fallback) {
-          modalImage.src = modalImage.dataset.fallback;
-          modalImage.dataset.fallback = '';
-        }
-      };
       modalImage.src = imgSrc;
       modalProperty.textContent = propertyText;
       modalStory.textContent = storyText;
@@ -1088,82 +930,43 @@
       window.clearTimeout(toastTimer);
       toast.textContent = message;
       toast.classList.add('show');
-      toastTimer = window.setTimeout(() => {
-        toast.classList.remove('show');
-      }, 1900);
+      toastTimer = window.setTimeout(() => toast.classList.remove('show'), 1900);
     }
 
-    function addInventoryItem(item) {
-      if (!hasInventoryItem(item.id)) {
-        globalInventory.push(item);
-      }
-      if (activePanel === 'inventory') {
-        renderInventoryPanel();
-      }
-    }
-
-    function hasInventoryItem(itemId) {
-      return globalInventory.some((item) => item.id === itemId);
-    }
-
-    function findInventoryItem(itemId) {
-      return globalInventory.find((item) => item.id === itemId);
-    }
-
-    function switchLevel(levelId) {
-      if (!levels[levelId]) return;
-      currentLevel = levelId;
-      isTreeCloseup = false;
-      isTreeBurnt = false;
-      equippedItem = null;
-      document.body.classList.remove('closeup');
-      renderCurrentLevel();
-      if (activePanel) renderPanel(activePanel);
-    }
-
+    document.querySelector('#tree-hotspot').addEventListener('click', openTreeCloseup);
+    document.querySelector('#pot-left-hotspot').addEventListener('click', searchLeftPot);
+    document.querySelector('#pot-right-hotspot').addEventListener('click', searchRightPot);
+    closeupInteractionZone.addEventListener('click', (event) => {
+      event.stopPropagation();
+      handleCloseupTreeClick();
+    });
+    closeupExit.addEventListener('click', (event) => {
+      event.stopPropagation();
+      closeTreeCloseup();
+    });
+    closeupView.addEventListener('click', (event) => {
+      if (event.target === closeupView) closeTreeCloseup();
+    });
     sidebarButtons.forEach((button) => {
       button.addEventListener('click', () => {
         const panelName = button.dataset.panel;
-        if (activePanel === panelName) {
-          closePanel();
-          return;
-        }
-        openPanel(panelName);
+        if (activePanel === panelName) closePanel();
+        else openPanel(panelName);
       });
     });
-
     closeDrawerButton.addEventListener('click', closePanel);
-
     drawerContent.addEventListener('click', (event) => {
       const skillButton = event.target.closest('[data-skill]');
       if (skillButton) {
         activateSkill(skillButton.dataset.skill);
         return;
       }
-
       const itemButton = event.target.closest('[data-item]');
-      if (itemButton) {
-        handleInventoryItemClick(itemButton.dataset.item);
-      }
+      if (itemButton) handleInventoryItemClick(itemButton.dataset.item);
     });
-
-    stage.addEventListener('click', (event) => {
-      const hotspot = event.target.closest('[data-action]');
-      if (!hotspot) return;
-
-      const action = hotspot.dataset.action;
-      if (action === 'tree') handleTreeClick();
-      if (action === 'search-right-pot') searchRightPot();
-      if (action === 'search-left-pot') searchLeftPot();
-      if (action === 'reset-overview') resetOverview();
-    });
-
     ancientModal.addEventListener('click', (event) => {
-      if (event.target === ancientModal) {
-        closeAncientModal();
-      }
+      if (event.target === ancientModal) closeAncientModal();
     });
-
     modalClose.addEventListener('click', closeAncientModal);
 
     window.gameState = {
@@ -1172,12 +975,8 @@
       get globalInventory() { return globalInventory; },
       get equippedItem() { return equippedItem; },
       get isTreeBurnt() { return isTreeBurnt; },
-      switchLevel,
-      showAncientModal,
       unlockSkill(skillId) {
-        if (!unlockedSkills.includes(skillId)) {
-          unlockedSkills.push(skillId);
-        }
+        if (!unlockedSkills.includes(skillId)) unlockedSkills.push(skillId);
         if (activePanel === 'skills') renderSkillsPanel();
       },
       addInventoryItem,
@@ -1186,8 +985,6 @@
         if (activePanel === 'clues') renderCluesPanel();
       }
     };
-
-    renderCurrentLevel();
   </script>
 </body>
 </html>
